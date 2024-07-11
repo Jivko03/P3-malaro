@@ -1,31 +1,25 @@
-name: Deploy to Azure VM
+name: Deploy to VM
 
 on:
   push:
     branches:
-      - main  # Change this to your branch if needed
+      - main  # Or any branch you want to trigger the deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.4
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.AZURE_VM_SSH_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Copy files to Azure VM
+    - name: Deploy to VM
       run: |
-        rsync -avz --exclude='.git' -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }}:/var/www/html
-
-    - name: Restart application (if needed)
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }} << 'EOF'
-          cd /var/www/html
-          # Add commands to restart your application, e.g., if using Docker:
-          # docker-compose down && docker-compose up -d
-        EOF
+        ssh azure@51.120.122.186 'bash -s' < ./deploy_script.sh
+      env:
+        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
