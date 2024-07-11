@@ -20,7 +20,7 @@ jobs:
 
     - name: Copy files to Azure VM
       run: |
-        rsync -avz --exclude='.git' -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }}:/path/to/your/directory
+        rsync -avz --exclude='.git' -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }}:/var/www/html
 
     - name: Restart application (if needed)
       run: |
