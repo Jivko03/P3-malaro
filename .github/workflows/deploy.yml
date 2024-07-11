@@ -20,6 +20,7 @@ jobs:
 
     - name: Deploy to VM
       run: |
+        ssh-keyscan -H 51.120.122.186 >> ~/.ssh/known_hosts
         ssh azure@51.120.122.186 'bash -s' < ./deploy_script.sh
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
